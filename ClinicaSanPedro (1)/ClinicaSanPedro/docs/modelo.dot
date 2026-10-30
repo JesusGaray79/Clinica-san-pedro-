@@ -1,0 +1,71 @@
+digraph G {
+  rankdir=BT; splines=ortho; nodesep=0.5; ranksep=0.7;
+  node [shape=plain, fontname="Helvetica", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+
+  Reportable [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EAF3FF">
+    <tr><td><i>&laquo;interface&raquo;</i><br/><b>Reportable</b></td></tr><hr/>
+    <tr><td align="left">+ registrarDatos(): Object[]</td></tr></table>>];
+  Cobrable [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EAF3FF">
+    <tr><td><i>&laquo;interface&raquo;</i><br/><b>Cobrable</b></td></tr><hr/>
+    <tr><td align="left">+ calcularMonto(): double</td></tr></table>>];
+
+  Persona [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6DD">
+    <tr><td><i><b>Persona</b></i><br/>&laquo;abstract&raquo;</td></tr><hr/>
+    <tr><td align="left"># dni: String<br align="left"/># nombres: String<br align="left"/># telefono: String<br align="left"/></td></tr><hr/>
+    <tr><td align="left">+ setDni(String) / setNombres(String) / setTelefono(String)<br align="left"/><i>+ descripcion(): String</i><br align="left"/></td></tr></table>>];
+
+  Paciente [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F4FFF0">
+    <tr><td><b>Paciente</b></td></tr><hr/>
+    <tr><td align="left">- edad: int<br align="left"/>- sexo: String<br align="left"/></td></tr><hr/>
+    <tr><td align="left">+ descripcion(): String<br align="left"/>+ registrarDatos(): Object[]<br align="left"/></td></tr></table>>];
+
+  Medico [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F4FFF0">
+    <tr><td><b>Medico</b></td></tr><hr/>
+    <tr><td align="left">- id: int<br align="left"/>- tarifa: double<br align="left"/>- activo: boolean<br align="left"/></td></tr><hr/>
+    <tr><td align="left">+ descripcion(): String<br align="left"/>+ registrarDatos(): Object[]<br align="left"/></td></tr></table>>];
+
+  Usuario [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF6DD">
+    <tr><td><i><b>Usuario</b></i><br/>&laquo;abstract&raquo;</td></tr><hr/>
+    <tr><td align="left">- id: int<br align="left"/>- username: String<br align="left"/>- clave: String (hash)<br align="left"/>- activo: boolean<br align="left"/></td></tr><hr/>
+    <tr><td align="left"><i>+ puedeAcceder(modulo): boolean</i><br align="left"/><i>+ getRol(): String</i><br align="left"/>+ registrarDatos(): Object[]<br align="left"/></td></tr></table>>];
+
+  Administrador [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F4FFF0">
+    <tr><td><b>Administrador</b></td></tr><hr/>
+    <tr><td align="left">+ puedeAcceder(modulo): boolean<br align="left"/>+ getRol(): String<br align="left"/></td></tr></table>>];
+  Asistente [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F4FFF0">
+    <tr><td><b>Asistente</b></td></tr><hr/>
+    <tr><td align="left">+ puedeAcceder(modulo): boolean<br align="left"/>+ getRol(): String<br align="left"/></td></tr></table>>];
+
+  Especialidad [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F4FFF0">
+    <tr><td><b>Especialidad</b></td></tr><hr/>
+    <tr><td align="left">- id: int<br align="left"/>- nombre: String<br align="left"/></td></tr></table>>];
+
+  Cita [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F4FFF0">
+    <tr><td><b>Cita</b></td></tr><hr/>
+    <tr><td align="left">- id: int<br align="left"/>- fecha: LocalDate<br align="left"/>- hora: LocalTime<br align="left"/>- motivo: String<br align="left"/>- estado: String<br align="left"/>- monto: double<br align="left"/></td></tr><hr/>
+    <tr><td align="left">+ marcarAtendida() / cancelar()<br align="left"/>+ calcularMonto(): double<br align="left"/>+ registrarDatos(): Object[]<br align="left"/></td></tr></table>>];
+
+  Periodo [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F4FFF0">
+    <tr><td><b>Periodo</b></td></tr><hr/>
+    <tr><td align="left">- tipo: String<br align="left"/>- desde, hasta: LocalDate<br align="left"/></td></tr></table>>];
+  Resumen [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F4FFF0">
+    <tr><td><b>Resumen</b></td></tr><hr/>
+    <tr><td align="left">- atendidas, canceladas, pendientes: int<br align="left"/>- ganancia: double<br align="left"/></td></tr></table>>];
+
+  // Herencia (flecha con triángulo vacío)
+  edge [arrowhead=onormal, style=solid];
+  Paciente -> Persona; Medico -> Persona; Usuario -> Persona;
+  Administrador -> Usuario; Asistente -> Usuario;
+  // Implementación de interfaces (línea punteada)
+  edge [arrowhead=onormal, style=dashed];
+  Paciente -> Reportable; Medico -> Reportable; Usuario -> Reportable;
+  Cita -> Reportable; Cita -> Cobrable;
+  // Asociaciones
+  edge [arrowhead=vee, style=solid];
+  Cita -> Paciente [label="1 paciente"];
+  Cita -> Medico [label="1 médico"];
+  Cita -> Usuario [label="registrada por"];
+  edge [arrowhead=vee, arrowtail=none, dir=forward];
+  Medico -> Especialidad [label="tiene"];
+}
